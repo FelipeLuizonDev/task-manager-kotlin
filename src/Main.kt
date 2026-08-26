@@ -61,4 +61,18 @@ class TaskManager {
             "Status da tarefa ID $id atualizado para $isCompleted"
         )
     }
+
+    fun deleteTask(id: Int): TaskResult {
+        val task = findTaskById(id)
+
+        require(task != null) {
+            "Tarefa com ID $id não encontrada."
+        }
+
+        tasks.remove(task)
+
+        return TaskResult.Success(
+            "Tarefa ID $id excluida com sucesso!"
+        )
+    }
 }
