@@ -17,3 +17,8 @@ data class Task(
         private fun generateId(): Int = nextId++
     }
 }
+
+sealed class TaskResult {
+    data class Success(val message: String) : TaskResult()
+    data class Error(val message: String) : TaskResult()
+}
