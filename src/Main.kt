@@ -75,4 +75,16 @@ class TaskManager {
             "Tarefa ID $id excluida com sucesso!"
         )
     }
+
+    fun getCompletedTasks(): List<Task> {
+        return tasks.filter { task ->
+            task.isCompleted
+        }
+    }
+
+    fun getPendingTasks(): List<Task> {
+        return tasks.filter { task ->
+            !task.isCompleted
+        }
+    }
 }
