@@ -33,4 +33,12 @@ class TaskManager {
             "Tarefa adicionada com sucesso! ID: ${task.id}"
         )
     }
+
+    fun listTasks() {
+        tasks.forEach { task ->
+            val (_, title, _, isCompleted) = task
+
+            println("($title, $isCompleted)")
+        }
+    }
 }
