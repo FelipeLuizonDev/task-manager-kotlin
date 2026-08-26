@@ -97,4 +97,8 @@ class TaskManager {
             !task.isCompleted
         }
     }
+
+    fun getTaskCount(): Int {
+        return tasks.size
+    }
 }
