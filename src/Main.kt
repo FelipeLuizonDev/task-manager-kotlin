@@ -102,3 +102,129 @@ class TaskManager {
         return tasks.size
     }
 }
+
+fun main() {
+    val manager = TaskManager()
+
+    while (true) {
+        println()
+        println("=== LISTA DE TAREFAS ===")
+        println("1 - Adicionar tarefa")
+        println("2 - Listar tarefas")
+        println("3 - Buscar tarefa por ID")
+        println("4 - Atualizar status")
+        println("5 - Excluir tarefa")
+        println("6 - Listar tarefas concluídas")
+        println("7 - Listar terafas pendentes")
+        println("8 - Mostrar quantidade de tarefas")
+        println("0 - Sair")
+
+        println("Escolha uma opção: ")
+
+        when (readln()) {
+
+            "1" -> {
+                print("Título: ")
+                val title = readln()
+
+                println("Descrição (opcional): ")
+                val descriptionInput = readln()
+
+                val description =
+                    if (descriptionInput.isBlank()) null
+                    else descriptionInput
+
+                val task = Task(
+                    title = title,
+                    description = description,
+                    createdAt = "26/08/2026"
+                )
+
+                println(manager.addTask(task))
+            }
+
+            "2" -> {
+                println("\nTarefas: ")
+                manager.listTasks()
+            }
+
+            "3" -> {
+                print("Digite o ID da tarefa: ")
+                val id = readln().toInt()
+
+                val task = manager.findTaskById(id)
+
+                if (task != null) {
+                    println(task.toFormattedString())
+                } else {
+                    println("Tarefa não encontrada.")
+                }
+            }
+
+            "4" -> {
+                print("Digite o ID da tarefa: ")
+                val id = readln().toInt()
+
+                print("Concluir tarefa? (true/false): ")
+                val isCompleted = readln().toBoolean()
+
+                try {
+                    println(
+                        manager.updateTaskStatus(
+                            id = id,
+                            isCompleted = isCompleted
+                        )
+                    )
+                } catch (exception: IllegalArgumentException) {
+                    println(exception.message)
+                }
+            }
+
+            "5" -> {
+                print("Digite o ID da tarefa: ")
+                val id = readln().toInt()
+
+                try {
+                    println(manager.deleteTask(id))
+                } catch (exception: IllegalArgumentException) {
+                    println(exception.message)
+                }
+            }
+
+            "6" -> {
+                println("\nTarefas concluídas: ")
+
+                manager
+                    .getCompletedTasks()
+                    .forEach {
+                        println(it.toFormattedString())
+                        println()
+                    }
+            }
+
+            "7" -> {
+                println("\nTarefas pendentes: ")
+
+                manager
+                    .getPendingTasks()
+                    .forEach {
+                        println(it.toFormattedString())
+                        println()
+                    }
+            }
+
+            "8" -> {
+                println("Total de tarefas: ${manager.getTaskCount()}")
+            }
+
+            "0" -> {
+                println("Programa encerrado.")
+                break
+            }
+
+            else -> {
+                println("Opção inválida.")
+            }
+        }
+    }
+}
