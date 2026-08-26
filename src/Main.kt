@@ -2,7 +2,7 @@ data class Task(
     val id: Int = generateId(),
     val title: String,
     val description: String? = null,
-    val isCompleted: Boolean = false,
+    var isCompleted: Boolean = false,
     val createdAt: String
 ) {
     init {
@@ -46,5 +46,19 @@ class TaskManager {
         return tasks.find { task ->
             task.id == id
         }
+    }
+
+    fun updateTaskStatus(id: Int, isCompleted: Boolean): TaskResult {
+        val task = findTaskById(id)
+
+        require(task != null) {
+            "Tarefa com ID $id não encontrada."
+        }
+
+        task.isCompleted = isCompleted
+
+        return TaskResult.Success(
+            "Status da tarefa ID $id atualizado para $isCompleted"
+        )
     }
 }
