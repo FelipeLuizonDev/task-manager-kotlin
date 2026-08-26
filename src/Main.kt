@@ -105,36 +105,92 @@ class TaskManager {
     }
 }
 
+fun readTaskId(): Int {
+    var id: Int? = null
+
+    while (id == null || id < 1) {
+        print("-> ")
+        id = readlnOrNull()?.toIntOrNull()
+
+        if (id == null || id < 1) {
+            println("O ID inserido é inválido. Tente novamente.")
+        }
+    }
+
+    return id
+}
+
+fun readTaskTitle(): String {
+    var title: String? = null
+
+    while (title.isNullOrBlank()) {
+        print("-> ")
+        title = readlnOrNull()
+
+        if (title.isNullOrBlank()) {
+            println("O título inserido é inválido. Tente novamente.")
+        }
+    }
+
+    return title
+}
+
+fun readTaskStatus(): Boolean {
+    var status: Boolean? = null
+
+    while (status == null) {
+        print("-> ")
+        status = readlnOrNull()?.toBooleanStrictOrNull()
+
+        if (status == null) {
+            println("Status inválido! Digite true ou false.")
+        }
+    }
+
+    return status
+}
+
 fun main() {
     val manager = TaskManager()
 
-    while (true) {
-        println()
-        println("=== LISTA DE TAREFAS ===")
-        println("1 - Adicionar tarefa")
-        println("2 - Listar tarefas")
-        println("3 - Buscar tarefa por ID")
-        println("4 - Atualizar status")
-        println("5 - Excluir tarefa")
-        println("6 - Listar tarefas concluídas")
-        println("7 - Listar terafas pendentes")
-        println("8 - Mostrar quantidade de tarefas")
-        println("0 - Sair")
+    var option: Int? = null
 
-        println("Escolha uma opção: ")
+    while (option != 0) {
+        println(
+            """
+            
+            +----------------------------------+
+            |         LISTA DE TAREFAS         |
+            +----------------------------------+
+            | 1 - Adicionar tarefa             |
+            | 2 - Listar tarefas               |
+            | 3 - Buscar tarefa por ID         |
+            | 4 - Atualizar status             |
+            | 5 - Excluir tarefa               |
+            | 6 - Tarefas concluídas           |
+            | 7 - Tarefas pendentes            |
+            | 8 - Quantidade de tarefas        |
+            | 0 - Sair                         |
+            +----------------------------------+
+            """.trimIndent()
+        )
 
-        when (readln()) {
+        println("Escolha uma opção:")
+        print("-> ")
 
-            "1" -> {
-                print("Título: ")
-                val title = readln()
+        option = readlnOrNull()?.toIntOrNull()
 
-                println("Descrição (opcional): ")
-                val descriptionInput = readln()
+        when (option) {
 
-                val description =
-                    if (descriptionInput.isBlank()) null
-                    else descriptionInput
+            1 -> {
+                println("Insira o título da tarefa:")
+                val title = readTaskTitle()
+
+                println("Insira uma descrição (opcional):")
+                print("-> ")
+
+                val description = readlnOrNull()
+                    ?.takeIf { it.isNotBlank() }
 
                 val task = Task(
                     title = title,
@@ -144,36 +200,40 @@ fun main() {
                 println(manager.addTask(task))
             }
 
-            "2" -> {
-                println("\nTarefas: ")
-                manager.listTasks()
-            }
+            2 -> {
+                println("\nTAREFAS:")
 
-            "3" -> {
-                print("Digite o ID da tarefa: ")
-                val id = readln().toInt()
-
-                val task = manager.findTaskById(id)
-
-                if (task != null) {
-                    println(task.toFormattedString())
+                if (manager.getTaskCount() == 0) {
+                    println("Nenhuma tarefa cadastrada.")
                 } else {
-                    println("Tarefa não encontrada.")
+                    manager.listTasks()
                 }
             }
 
-            "4" -> {
-                print("Digite o ID da tarefa: ")
-                val id = readln().toInt()
+            3 -> {
+                println("Insira o ID da tarefa:")
+                val id = readTaskId()
 
-                print("Concluir tarefa? (true/false): ")
-                val isCompleted = readln().toBoolean()
+                val task = manager.findTaskById(id)
+
+                println(
+                    task?.toFormattedString()
+                        ?: "Não existe nenhuma tarefa com esse ID."
+                )
+            }
+
+            4 -> {
+                println("Insira o ID da tarefa:")
+                val id = readTaskId()
+
+                println("Digite o novo status da tarefa (true/false):")
+                val status = readTaskStatus()
 
                 try {
                     println(
                         manager.updateTaskStatus(
                             id = id,
-                            isCompleted = isCompleted
+                            isCompleted = status
                         )
                     )
                 } catch (exception: IllegalArgumentException) {
@@ -181,9 +241,9 @@ fun main() {
                 }
             }
 
-            "5" -> {
-                print("Digite o ID da tarefa: ")
-                val id = readln().toInt()
+            5 -> {
+                println("Insira o ID da tarefa:")
+                val id = readTaskId()
 
                 try {
                     println(manager.deleteTask(id))
@@ -192,39 +252,48 @@ fun main() {
                 }
             }
 
-            "6" -> {
-                println("\nTarefas concluídas: ")
+            6 -> {
+                val completedTasks = manager.getCompletedTasks()
 
-                manager
-                    .getCompletedTasks()
-                    .forEach {
-                        println(it.toFormattedString())
+                println("\nTAREFAS CONCLUÍDAS:")
+
+                if (completedTasks.isEmpty()) {
+                    println("Nenhuma tarefa concluída.")
+                } else {
+                    completedTasks.forEach { task ->
+                        println(task.toFormattedString())
                         println()
                     }
+                }
             }
 
-            "7" -> {
-                println("\nTarefas pendentes: ")
+            7 -> {
+                val pendingTasks = manager.getPendingTasks()
 
-                manager
-                    .getPendingTasks()
-                    .forEach {
-                        println(it.toFormattedString())
+                println("\nTAREFAS PENDENTES:")
+
+                if (pendingTasks.isEmpty()) {
+                    println("Nenhuma tarefa pendente.")
+                } else {
+                    pendingTasks.forEach { task ->
+                        println(task.toFormattedString())
                         println()
                     }
+                }
             }
 
-            "8" -> {
-                println("Total de tarefas: ${manager.getTaskCount()}")
+            8 -> {
+                println(
+                    "Quantidade de tarefas: ${manager.getTaskCount()}"
+                )
             }
 
-            "0" -> {
+            0 -> {
                 println("Programa encerrado.")
-                break
             }
 
             else -> {
-                println("Opção inválida.")
+                println("Opção inválida. Tente novamente.")
             }
         }
     }
