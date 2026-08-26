@@ -16,6 +16,16 @@ data class Task(
 
         private fun generateId(): Int = nextId++
     }
+
+    fun toFormattedString(): String {
+        return """
+            ID: $id
+            Título: $title
+            Descrição: ${description ?: "Sem descrição"}
+            Concluída: $isCompleted
+            Criada em: $createdAt
+        """.trimIndent()
+    }
 }
 
 sealed class TaskResult {
