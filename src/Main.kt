@@ -1,9 +1,11 @@
+import java.time.LocalDateTime
+
 data class Task(
     val id: Int = generateId(),
     val title: String,
     val description: String? = null,
     var isCompleted: Boolean = false,
-    val createdAt: String
+    val createdAt: LocalDateTime = LocalDateTime.now()
 ) {
     init {
         require(title.isNotBlank()) {
@@ -136,8 +138,7 @@ fun main() {
 
                 val task = Task(
                     title = title,
-                    description = description,
-                    createdAt = "26/08/2026"
+                    description = description
                 )
 
                 println(manager.addTask(task))
