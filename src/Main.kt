@@ -22,3 +22,7 @@ sealed class TaskResult {
     data class Success(val message: String) : TaskResult()
     data class Error(val message: String) : TaskResult()
 }
+
+class TaskManager {
+    private val tasks = mutableListOf<Task>()
+}
