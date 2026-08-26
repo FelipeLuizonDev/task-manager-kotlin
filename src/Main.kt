@@ -25,4 +25,12 @@ sealed class TaskResult {
 
 class TaskManager {
     private val tasks = mutableListOf<Task>()
+
+    fun addTask(task: Task): TaskResult {
+        tasks.add(task)
+
+        return TaskResult.Success(
+            "Tarefa adicionada com sucesso! ID: ${task.id}"
+        )
+    }
 }
