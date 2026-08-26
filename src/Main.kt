@@ -41,4 +41,10 @@ class TaskManager {
             println("($title, $isCompleted)")
         }
     }
+
+    fun findTaskById(id: Int): Task? {
+        return tasks.find { task ->
+            task.id == id
+        }
+    }
 }
